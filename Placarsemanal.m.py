@@ -1,3 +1,10 @@
+PLACAR RPG - RANKING EM TEMPO REAL
+  Autora: Giullia Jalovicar | Setembro 2025 | Desenvolvimento Web
+  
+  Interface de ranking RPG com Firebase Firestore para updates automáticos.
+  Funcionalidades: Pódio com gradientes, tabela responsiva, loading/erros.
+  Banco: Coleção "placar" {nome, grupo, pontos} ordenado por pontos DESC.
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
