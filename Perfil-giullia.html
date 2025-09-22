@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- META TAGS - Configurações básicas da página -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- TÍTULO DA PÁGINA - Nome exibido na aba do navegador -->
+  <title>Perfil do Aventureiro</title>
+  
+  <!-- CSS - Estilos da página -->
+  <style>
+    /* VARIÁVEIS CSS - Paleta de cores baseada no tema medieval */
+    :root {
+      --cor-pedra: #d1b17a; /* Cor principal das pedras/texturas */
+      --cor-pedra-clara: #e4cfa0; /* Variação mais clara da pedra */
+      --cor-telhado: #c56a45; /* Cor do telhado/tijolo */
+      --cor-telhado-escuro: #a3452f; /* Telhado mais escuro */
+      --cor-escuro: #2e2e2e; /* Cor de texto principal */
+    }
+
+    /* ESTILOS GLOBAIS - Configurações gerais do corpo da página */
+    body {
+      /* BACKGROUND - Imagem de fundo da cidade do espantalho */
+      background: url("imagens/cidade_do_espantalho.png") no-repeat center center fixed;
+      background-size: cover;
+      /* FONTE - Tipografia serif para estilo medieval */
+      font-family: 'Georgia', serif;
+      color: var(--cor-escuro);
+      margin: 0;
+      padding: 0;
+      /* LAYOUT CENTRALIZADO - Centraliza todo o conteúdo */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* CONTAINER PRINCIPAL - Estrutura principal do perfil */
+    .perfil-container {
+      /* BACKGROUND E TRANSPARÊNCIA - Fundo semi-transparente de pedra */
+      background: var(--cor-pedra-clara);
+      /* BORDA DECORATIVA - Borda de telhado ao redor do container */
+      border: 8px solid var(--cor-telhado-escuro);
+      border-radius: 20px;
+      max-width: 900px;
+      width: 95%;
+      padding: 25px;
+      /* SOMBRA - Efeito de profundidade */
+      box-shadow: 0 0 35px rgba(0,0,0,0.8);
+      /* EFEITO DE DESFOCAGEM - Blur no fundo através do container */
+      backdrop-filter: blur(3px);
+    }
+
+    /* TÍTULOS - Estilo para h1 e h2 */
+    h1, h2 {
+      text-align: center;
+      color: var(--cor-telhado-escuro);
+      /* SOMBRA DE TEXTO - Efeito de relevo */
+      text-shadow: 2px 2px 0px var(--cor-pedra);
+      font-family: "Cinzel", serif; /* Fonte decorativa para títulos */
+    }
+
+    /* SEÇÃO PERSONAGEM E ARMA - Container flexível para cards */
+    .personagem-armas {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 30px 0;
+      flex-wrap: wrap; /* Quebra linha em telas menores */
+    }
+
+    /* CARDS - Estilo para cards de personagem e arma */
+    .card {
+      /* BACKGROUND DE PEDRA - Textura de pedra para os cards */
+      background: var(--cor-pedra);
+      /* BORDA DUPLO - Estilo medieval de borda dupla */
+      border: 4px double var(--cor-telhado-escuro);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      /* SOMBRA INTERNA - Efeito de profundidade interna */
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+      min-width: 160px;
+    }
+
+    /* IMAGENS DOS CARDS - Estilo para fotos do personagem e arma */
+    .card img {
+      max-width: 150px;
+      max-height: 150px;
+      object-fit: contain; /* Mantém proporção da imagem */
+    }
+
+    /* SEÇÃO CLASSES - Container para lista de classes */
+    .classes {
+      /* BACKGROUND DE PEDRA - Mesmo estilo dos outros containers */
+      background: var(--cor-pedra);
+      /* BORDA DUPLO - Consistência visual com os outros elementos */
+      border: 4px double var(--cor-telhado-escuro);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 25px;
+      /* SOMBRA INTERNA - Profundidade interna */
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    /* LISTA DE CLASSES - Estilo da lista sem marcadores */
+    .classes ul {
+      list-style: none; /* Remove bullets padrão */
+      padding: 0;
+    }
+
+    .classes li {
+      font-size: 18px;
+      margin: 8px 0;
+    }
+
+    /* NÍVEIS DAS CLASSES - Destaque para os níveis */
+    .classes span {
+      font-weight: bold;
+      color: var(--cor-telhado-escuro);
+    }
+
+    /* SEÇÃO MEDALHAS - Container para grid de medalhas */
+    .medalhas {
+      /* BACKGROUND DE PEDRA - Consistência visual */
+      background: var(--cor-pedra);
+      /* BORDA DUPLO - Mesmo estilo medieval */
+      border: 4px double var(--cor-telhado-escuro);
+      border-radius: 14px;
+      padding: 18px;
+      /* SOMBRA INTERNA - Profundidade */
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    /* GRID DE MEDALHAS - Layout em 4 colunas */
+    .medalhas-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 4 colunas iguais */
+      gap: 15px;
+      justify-items: center;
+      margin-top: 12px;
+    }
+
+    /* SLOT DE MEDALHA - Container individual para cada medalha */
+    .medalha-slot {
+      width: 80px;
+      height: 80px;
+      /* FUNDO CLARO - Para destacar as medalhas */
+      background: var(--cor-pedra-clara);
+      /* BORDA DECORATIVA - Moldura das medalhas */
+      border: 3px solid var(--cor-telhado-escuro);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* SOMBRA INTERNA - Profundidade no slot */
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+    }
+
+    /* IMAGENS DAS MEDALHAS - Estilo para as medalhas */
+    .medalha-slot img {
+      max-width: 100%;
+      max-height: 100%; /* Preenche o slot completamente */
+    }
+  </style>
+</head>
+<body>
+  <!-- CONTAINER PRINCIPAL - Toda a estrutura do perfil fica aqui -->
+  <div class="perfil-container">
+    
+    <!-- CABEÇALHO - Título principal do perfil -->
+    <h1>Perfil do Aventureiro</h1>
+
+    <!-- SEÇÃO PERSONAGEM + ARMA - Apresentação visual do personagem -->
+    <div class="personagem-armas">
+      <!-- CARD DO PERSONAGEM - Foto e nome do aventureiro -->
+      <div class="card">
+        <img src="imagens/boneco_giullia.png" alt="Giullia">
+        <p>Giullia Jalovicar</p>
+      </div>
+      
+      <!-- CARD DA ARMA - Equipamento principal do personagem -->
+      <div class="card">
+        <img src="imagens/arma-giullia.png" alt="Varinha">
+        <p>Varinha Estelar</p>
+      </div>
+    </div>
+
+    <!-- SEÇÃO CLASSES - Lista de classes e níveis do personagem -->
+    <div class="classes">
+      <h2>Classes</h2>
+      <ul>
+        <!-- ITENS DA LISTA - Cada linha representa uma classe -->
+        <li>⚔️ Cavaleiro <span>Nv 1</span></li>
+        <li>✨ Mago <span>Nv 1</span></li>
+        <li>🔱 Artífice <span>Nv 1</span></li>
+        <li>💰 Mercador <span>Nv 1</span></li>
+        <li>🌟 Herói <span>Nv 0</span></li>
+      </ul>
+    </div>
+
+    <!-- SEÇÃO MEDALHAS - Grid de conquistas e medalhas -->
+    <div class="medalhas">
+      <h2>Medalhas</h2>
+      <!-- GRID DE SLOTS - 4 posições para medalhas -->
+      <div class="medalhas-grid">
+        <div class="medalha-slot">
+          <img src="medalha1.png" alt="Medalha 1">
+        </div>
+        <div class="medalha-slot">
+          <img src="medalha2.png" alt="Medalha 2">
+        </div>
+        <div class="medalha-slot">
+          <img src="medalha3.png" alt="Medalha 3">
+        </div>
+        <div class="medalha-slot">
+          <img src="medalha4.png" alt="Medalha 4">
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
