@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventário Épico</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Roboto:wght@400;700&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1519608423380-2a6112b1a78b?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  min-height: 100vh;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #f5f5dc;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/old-map.png') repeat;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 3.5em;
+  color: #ffd700;
+  text-shadow: 3px 3px 10px #000, 0 0 25px rgba(255, 215, 0, 0.7);
+  margin-bottom: 40px;
+  text-align: center;
+  animation: fadeIn 1.5s ease-in-out;
+  position: relative;
+  z-index: 1;
+  background: url('https://www.transparenttextures.com/patterns/dark-mosaic.png') repeat;
+  padding: 10px 20px;
+  border: 3px solid #a9742b;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255,215,0,0.3) inset;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  width: 100%;
+  padding: 20px;
+  background: rgba(20, 10, 0, 0.8);
+  border: 4px solid #a9742b;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8) inset;
+  position: relative;
+  z-index: 1;
+}
+
+.item {
+  background: rgba(30, 15, 0, 0.85);
+  border: 3px solid #a9742b;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.8), 0 0 15px rgba(255,215,0,0.3) inset;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  animation: slideIn 0.8s ease-in-out forwards;
+  animation-delay: calc(0.1s * var(--i));
+}
+
+@keyframes slideIn {
+  0% { opacity: 0; transform: translateY(50px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.item::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,215,0,0.15), transparent 70%);
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+
+.item:hover::before {
+  transform: rotate(0deg);
+}
+
+.item:hover {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.9), 0 0 20px rgba(255,215,0,0.5) inset;
+}
+
+.item img {
+  width: 100%;
+  max-width: 120px;
+  margin-bottom: 12px;
+  border: 2px solid #a9742b;
+  border-radius: 10px;
+  background: #3c2200;
+  padding: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+  transition: transform 0.3s ease;
+}
+
+.item:hover img {
+  transform: scale(1.1);
+}
+
+.item p {
+  margin: 8px 0 4px;
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #ffd700;
+  text-shadow: 1px 1px 3px #000;
+}
+
+.item span {
+  display: block;
+  font-weight: normal;
+  font-size: 0.95em;
+  color: #f5f5dc;
+  margin-top: 6px;
+  line-height: 1.3em;
+}
+
+.next-page {
+  margin-top: 50px;
+  padding: 15px 35px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(145deg, #a9742b, #ffd700);
+  border: 3px solid #ffd700;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  text-shadow: 1px 1px 3px #000;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.7), 0 0 20px rgba(255,215,0,0.5) inset;
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.next-page::after {
+  content: '🕯️';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 1.5em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.next-page:hover::after {
+  opacity: 1;
+}
+
+.next-page:hover {
+  transform: scale(1.1) rotate(-1deg);
+  background: linear-gradient(145deg, #ffd700, #a9742b);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 30px rgba(255,215,0,0.7) inset;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2.5em;
+    padding: 8px 15px;
+  }
+  .grid {
+    padding: 15px;
+  }
+  .item {
+    padding: 15px;
+  }
+  .item img {
+    max-width: 100px;
+  }
+  .next-page {
+    padding: 12px 30px;
+    font-size: 1em;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1>Inventário Épico</h1>
+
+<div class="grid">
+  <div class="item" style="--i: 1;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLA_bnPDSgErr-fesEoy_UUZYITU0-4saqtjP5puIQ1gOuGRRQ3VCZX4ycSV1br-TI-ZQ&usqp=CAU" alt="Espada de Ferro, lâmina forjada em ferro puro para combates corpo a corpo">
+    <p>Espada de Ferro</p>
+    <span>Uma lâmina resistente, forjada em ferro puro. Ideal para combates corpo a corpo contra monstros e inimigos do reino.</span>
+  </div>
+
+  <div class="item" style="--i: 2;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRCp8AkGKPbf98lvZ_Gr2MzJwOY6OfeoJ958Q&s" alt="Poção de Cura, elixir vermelho que restaura saúde instantaneamente">
+    <p>Poção de Cura</p>
+    <span>Elixir vermelho capaz de restaurar a saúde do herói instantaneamente. Essencial para aventuras perigosas.</span>
+  </div>
+
+  <div class="item" style="--i: 3;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS-mkNIBC9XfWvpuSJzpNwLUx_e6i3YFUBdaw&s" alt="Escudo de Madeira, proteção rústica e leve para jornadas">
+    <p>Escudo de Madeira</p>
+    <span>Escudo rústico feito de madeira reforçada. Protege contra golpes leves e é leve para carregar em longas jornadas.</span>
+  </div>
+
+  <div class="item" style="--i: 4;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRZ7kczSDQ7Cn1Hz8L3ixo8eJMLx0ugx_fGMAVemye6qPO08CE8HRaCcFnlzZovBqicCm0&usqp=CAU" alt="Arco Longo, arma de longo alcance para ataques precisos">
+    <p>Arco Longo</p>
+    <span>Arma de longo alcance que permite atacar inimigos à distância. Requer flechas e habilidade para máxima precisão.</span>
+  </div>
+
+  <div class="item" style="--i: 5;">
+    <img src="https://m.media-amazon.com/images/I/61SAoxX0GLL.jpg" alt="Pergaminho Ancestral, contém feitiços poderosos e segredos antigos">
+    <p>Pergaminho Ancestral</p>
+    <span>Pergaminho antigo com feitiços poderosos e segredos esquecidos. Pode ser usado para lançar magias únicas ou desvendar mistérios do reino.</span>
+  </div>
+</div>
+
+<a href="page2.html" class="next-page">Próxima Página</a>
+
+</body>

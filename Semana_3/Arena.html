@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- Define a codificação de caracteres como UTF-8 para suportar caracteres especiais (ex.: emojis) -->
+  <meta charset="UTF-8">
+  <!-- Configura a responsividade para ajustar a página à largura do dispositivo com escala inicial de 1.0 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Define o título da página exibido na aba do navegador -->
+  <title>Arena dos Campeões</title>
+  <!-- Importa o Tailwind CSS via CDN para utilitários de estilo (ex.: flex, max-w-6xl) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* === CSS GLOBAL === */
+    /* Reseta margens e paddings padrão, usa box-sizing: border-box para cálculos consistentes e adiciona transições suaves para mudanças de cor e transformação */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease;
+    }
+
+    /* Define o corpo da página com fonte sem serifa, altura mínima da tela, layout flexível em coluna */
+    body {
+      font-family: 'Arial', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Aplica animação de entrada para seções (opacidade e deslocamento vertical), ativada pela classe 'visible' via JavaScript */
+    section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    /* Define o estado visível das seções, com opacidade total e sem deslocamento */
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === TEMA MEDIEVAL (Padrão) === */
+    /* Define variáveis CSS para cores e sombra do tema medieval, usadas em toda a página */
+    [data-theme="medieval"] {
+      --bg: #0c0a09; /* Fundo escuro da página */
+      --bg-soft: #141210; /* Fundo suave para cabeçalho e formulários */
+      --card: #1c1917; /* Fundo dos cartões (ex.: chaveamento, formulários) */
+      --text: #fde68a; /* Cor do texto principal */
+      --muted: #fcd34d; /* Cor do texto secundário */
+      --accent: #b45309; /* Cor primária (cobre) para botões e bordas */
+      --accent-2: #84cc16; /* Cor secundária (verde) para destaque do campeão */
+      --shadow: rgba(0, 0, 0, 0.5); /* Sombra padrão */
+    }
+
+    /* Aplica o fundo e a cor do texto do tema medieval ao corpo */
+    .medieval {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Estiliza o cabeçalho com fundo suave e borda inferior cobre */
+    .medieval header {
+      background: var(--bg-soft);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    /* Estiliza a navegação com fundo de cartão e desfoque para efeito visual */
+    .medieval nav {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Define o estilo dos cartões (usados no chaveamento e formulários) com fundo, borda e sombra */
+    .medieval .card {
+      background: var(--card);
+      border: 1px solid var(--accent);
+      box-shadow: 0 4px 6px var(--shadow);
+    }
+
+    /* Estiliza títulos (h1 a h6) com cor principal e sombra sutil */
+    .medieval h1, .medieval h2, .medieval h3, .medieval h4, .medieval h5, .medieval h6 {
+      color: var(--text);
+      text-shadow: 1px 1px 2px var(--shadow);
+    }
+
+    /* Define a cor secundária para textos com classe muted-text */
+    .medieval .muted-text {
+      color: var(--muted);
+    }
+
+    /* Estiliza links com cor secundária, sem sublinhado, e muda para cor principal no hover */
+    .medieval a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .medieval a:hover {
+      color: var(--text);
+    }
+
+    /* Define a cor primária para textos com classe accent-text */
+    .medieval .accent-text {
+      color: var(--accent);
+    }
+
+    /* Define o fundo primário (cobre) para elementos com classe accent-bg */
+    .medieval .accent-bg {
+      background: var(--accent);
+    }
+
+    /* Define o fundo secundário (verde) para elementos como o cartão do campeão */
+    .medieval .accent-2-bg {
+      background: var(--accent-2);
+    }
+
+    /* Estiliza botões com fundo cobre, texto escuro, bordas arredondadas e sombra */
+    .medieval button {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 4px var(--shadow);
+    }
+
+    /* Aplica efeito de hover nos botões, mudando a cor e elevando o botão */
+    .medieval button:hover {
+      background: #d66411; /* Tom mais claro do cobre */
+      transform: translateY(-2px);
+    }
+
+    /* Define borda com cor primária */
+    .medieval .border-accent {
+      border: 1px solid var(--accent);
+    }
+
+    /* Define borda com cor secundária */
+    .medieval .border-muted {
+      border: 1px solid var(--muted);
+    }
+
+    /* === ESTILIZAÇÃO DO CHAVEAMENTO === */
+    /* Define o layout flexível do chaveamento com rolagem horizontal em telas pequenas */
+    #chaveamento .flex {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    /* Estiliza os cartões do chaveamento com largura mínima, texto centralizado e transições */
+    #chaveamento .card {
+      min-width: 120px;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Aplica efeito de hover nos cartões, ampliando e adicionando sombra */
+    #chaveamento .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px var(--shadow);
+    }
+
+    /* Adiciona conectores visuais (linhas horizontais) entre os cartões do chaveamento */
+    #chaveamento .space-y-4 > div:not(:last-child)::after,
+    #chaveamento .space-y-\[4\.5rem\] > div:not(:last-child)::after,
+    #chaveamento .space-y-\[9\.5rem\] > div:not(:last-child)::after,
+    #chaveamento .space-y-\[19rem\] > div:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      width: 1rem;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* Ajusta a posição dos conectores para as diferentes fases do chaveamento */
+    #chaveamento .space-y-\[4\.5rem\] > div:not(:last-child)::after {
+      right: -1.5rem;
+    }
+
+    #chaveamento .space-y-\[9\.5rem\] > div:not(:last-child)::after {
+      right: -2rem;
+    }
+
+    #chaveamento .space-y-\[19rem\] > div:not(:last-child)::after {
+      right: -2.5rem;
+    }
+
+    /* === RESPONSIVIDADE === */
+    /* Ajusta o layout para telas menores (máximo de 768px) */
+    @media (max-width: 768px) {
+      /* Muda o chaveamento para uma coluna vertical */
+      #chaveamento .flex {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Cartões ocupam a largura total com margem inferior */
+      #chaveamento .card {
+        min-width: 100%;
+        margin-bottom: 1rem;
+      }
+
+      /* Remove margens superiores das colunas do chaveamento */
+      #chaveamento .space-y-4, 
+      #chaveamento .space-y-\[4\.5rem\], 
+      #chaveamento .space-y-\[9\.5rem\], 
+      #chaveamento .space-y-\[19rem\] {
+        margin-top: 0 !important;
+      }
+
+      /* Remove conectores em telas pequenas */
+      #chaveamento .card:not(:last-child)::after {
+        display: none;
+      }
+
+      /* Reduz o tamanho da fonte do título no cabeçalho */
+      header .text-4xl {
+        font-size: 1.5rem;
+      }
+
+      /* Muda a navegação para uma coluna vertical */
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* === TEMAS ALTERNATIVOS (Neon e Futurista) === */
+    /* Define o tema Neon com gradiente roxo e cores vibrantes */
+    .neon {
+      background: linear-gradient(to right, #1a0033, #000000);
+      color: #ff69b4;
+    }
+
+    .neon h1, .neon h2, .neon h3, .neon h4, .neon h5, .neon h6 {
+      color: #ff69b4;
+    }
+
+    .neon em, .neon p {
+      color: #ffffff;
+    }
+
+    .neon nav a {
+      color: #ff69b4;
+    }
+
+    .neon button {
+      background: #ff4081;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+
+    .neon button:hover {
+      background: #ff5c93;
+    }
+
+    .neon .card {
+      background: #2a002a;
+      border: 1px solid #ff69b4;
+      color: #ff69b4;
+    }
+
+    /* Define o tema Futurista com gradiente azul e cores modernas */
+    .futurista {
+      background: linear-gradient(to right, #001f3f, #000000);
+      color: #00c8ff;
+    }
+
+    .futurista h1, .futurista h2, .futurista h3, .futurista h4, .futurista h5, .futurista h6 {
+      color: #00c8ff;
+    }
+
+    .futurista em, .futurista p {
+      color: #e6f7ff;
+    }
+
+    .futurista nav a {
+      color: #00c8ff;
+    }
+
+    .futurista button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+
+    .futurista button:hover {
+      background: #339cff;
+    }
+
+    .futurista .card {
+      background: #001a33;
+      border: 1px solid #00c8ff;
+      color: #00c8ff;
+    }
+  </style>
+</head>
+
+<body class="font-sans min-h-screen flex flex-col medieval" data-theme="medieval">
+  <!-- Cabeçalho da página com logotipo e título -->
+  <header class="shadow-2xl">
+    <!-- Contêiner centralizado com largura máxima, layout flexível e padding -->
+    <div class="max-w-6xl mx-auto flex items-center justify-between p-6 relative">
+      <!-- Logotipo placeholder com fundo de cartão, bordas arredondadas e sombra -->
+      <div class="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg bg-[var(--card)]">
+        <span class="text-xs font-bold text-[var(--text)]">Logo</span>
+      </div>
+      <!-- Título e subtítulo centralizados -->
+      <div class="text-center flex-1">
+        <h1 class="text-4xl font-extrabold tracking-wide drop-shadow-lg">Arena dos Campeões</h1>
+        <p class="italic muted-text">Onde heróis e lendas se encontram</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Barra de navegação fixada no topo com links para as seções -->
+  <nav class="backdrop-blur-md p-4 sticky top-0 z-10 shadow-lg">
+    <ul class="flex space-x-6 justify-center font-semibold">
+      <li><a href="#chaveamento">Chaveamento</a></li>
+      <li><a href="#visitantes">Mural</a></li>
+      <li><a href="#historia">História</a></li>
+      <li><a href="#inscricao">Inscrição</a></li>
+    </ul>
+  </nav>
+
+  <!-- Conteúdo principal da página -->
+  <main class="flex-grow">
+    <!-- Botão para mostrar/esconder o chaveamento -->
+    <div class="text-center mt-6">
+      <button id="toggle-chaveamento" class="accent-bg hover:bg-[#d66411] text-[var(--bg)] font-bold py-2 px-6 rounded-lg shadow-md">
+        Mostrar Chaveamento
+      </button>
+    </div>
+
+    <!-- Seção do chaveamento do torneio, inicialmente escondida -->
+    <section id="chaveamento" class="max-w-6xl mx-auto py-16 px-6 hidden">
+      <!-- Título da seção com emoji -->
+      <h2 class="text-3xl font-bold mb-6 accent-text">🏆 Chaveamento</h2>
+      <!-- Contêiner com rolagem horizontal para o diagrama do torneio -->
+      <div class="overflow-x-auto">
+        <!-- Layout flexível para as colunas do torneio -->
+        <div class="flex justify-center items-start gap-8">
+          <!-- Primeira fase: 24 participantes -->
+          <div class="space-y-4">
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 1</div>
+            <!-- Repetido para Herói 2 a Herói 24 -->
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 2</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 3</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 4</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 5</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 6</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 7</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 8</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 9</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 10</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 11</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 12</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 13</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 14</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 15</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 16</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 17</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 18</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 19</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 20</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 21</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 22</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 23</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Herói 24</div>
+          </div>
+          <!-- Segunda fase: 12 vencedores -->
+          <div class="space-y-[4.5rem] mt-[2.75rem]">
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 1</div>
+            <!-- Repetido para Vencedor 2 a Vencedor 12 -->
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 2</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 3</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 4</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 5</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 6</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 7</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 8</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 9</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 10</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 11</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Vencedor 12</div>
+          </div>
+          <!-- Quartas de final: 6 competidores -->
+          <div class="space-y-[9.5rem] mt-[6.25rem]">
+            <div class="card p-2 rounded-lg text-center border-accent">Quartas 1</div>
+            <!-- Repetido para Quartas 2 a Quartas 6 -->
+            <div class="card p-2 rounded-lg text-center border-accent">Quartas 2</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Quartas 3</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Quartas 4</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Quartas 5</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Quartas 6</div>
+          </div>
+          <!-- Semifinais: 3 competidores -->
+          <div class="space-y-[19rem] mt-[13rem]">
+            <div class="card p-2 rounded-lg text-center border-accent">Semifinal 1</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Semifinal 2</div>
+            <div class="card p-2 rounded-lg text-center border-accent">Semifinal 3</div>
+          </div>
+          <!-- Campeão final -->
+          <div class="mt-[25.25rem]">
+            <div class="accent-2-bg text-[var(--bg)] font-bold p-2 rounded-lg text-center border-muted">🏆 Campeão</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção do mural de mensagens -->
+    <section id="visitantes" class="max-w-4xl mx-auto py-16 px-6">
+      <!-- Título da seção com emoji -->
+      <h2 class="text-3xl font-bold mb-6 accent-text">💬 Mural dos Visitantes</h2>
+      <!-- Formulário para enviar mensagens -->
+      <form id="mural-form" class="card p-6 rounded-2xl space-y-4 shadow-lg">
+        <!-- Campo para o nome do usuário -->
+        <input type="text" id="mural-nome" placeholder="Seu nome" class="w-full p-3 rounded-lg bg-[var(--bg-soft)] border-muted focus:ring-2 focus:ring-[var(--muted)] outline-none" required>
+        <!-- Campo para a mensagem -->
+        <textarea id="mural-msg" placeholder="Deixe sua mensagem" class="w-full p-3 rounded-lg bg-[var(--bg-soft)] border-muted focus:ring-2 focus:ring-[var(--muted)] outline-none" required></textarea>
+        <!-- Botão de envio do formulário -->
+        <button type="submit" class="btn accent-bg hover:bg-[#d66411] text-[var(--bg)] font-bold py-2 px-6 rounded-lg shadow-md">Enviar</button>
+      </form>
+      <!-- Área para exibir mensagens salvas -->
+      <div id="mural-mensagens" class="mt-6 space-y-4"></div>
+    </section>
+
+    <!-- Seção com a história da arena -->
+    <section id="historia" class="max-w-4xl mx-auto py-16 px-6">
+      <!-- Título da seção com emoji -->
+      <h2 class="text-3xl font-bold six mb-6 accent-text">📜 História da Arena</h2>
+      <!-- Texto descritivo da história -->
+      <p class="leading-relaxed muted-text">
+        A Arena dos Campeões nasceu como palco de batalhas lendárias, onde apenas os mais valentes guerreiros ousavam entrar.
+        Cada combate ecoa nos corredores como uma canção épica, inspirando novas gerações de heróis a lutar pela glória.
+      </p>
+    </section>
+
+    <!-- Seção do formulário de inscrição -->
+    <section id="inscricao" class="max-w-4xl mx-auto py-16 px-6">
+      <!-- Título da seção com emoji -->
+      <h2 class="text-3xl font-bold mb-6 accent-text">📝 Formulário de Inscrição</h2>
+      <!-- Formulário para inscrever participantes -->
+      <form id="inscricao-form" class="card p-6 rounded-2xl space-y-4 shadow-lg">
+        <!-- Campo para o nome do participante -->
+        <input type="text" id="inscricao-nome" placeholder="Nome do(a) guerreiro(a)" class="w-full p-3 rounded-lg bg-[var(--bg-soft)] border-muted focus:ring-2 focus:ring-[var(--muted)] outline-none" required>
+        <!-- Botão de envio do formulário -->
+        <button type="submit" class="btn accent-bg hover:bg-[#d66411] text-[var(--bg)] font-bold py-2 px-6 rounded-lg shadow-md">Enviar Inscrição</button>
+      </form>
+      <!-- Aviso escondido, exibido quando o limite de 24 inscrições é atingido -->
+      <p id="aviso" class="text-red-400 mt-4 hidden">⚠️ O limite de 24 inscrições já foi atingido.</p>
+    </section>
+  </main>
+
+  <!-- Rodapé da página -->
+  <footer class="text-center py-6 mt-12 shadow-inner bg-[var(--card)]">
+    <!-- Texto de direitos autorais -->
+    <p class="muted-text">Arena dos Campeões © 2025 - Todos os direitos reservados</p>
+  </footer>
+
+  <!-- JavaScript para funcionalidade interativa -->
+  <script>
+    // Função para salvar dados no localStorage, convertendo para JSON
+    function salvarLocalStorage(chave, dados) {
+      localStorage.setItem(chave, JSON.stringify(dados));
+    }
+
+    // Função para carregar dados do localStorage, retornando um array vazio se não houver dados
+    function carregarLocalStorage(chave) {
+      return JSON.parse(localStorage.getItem(chave)) || [];
+    }
+
+    // Seleciona o formulário de inscrição e o elemento de aviso
+    const inscricaoForm = document.getElementById("inscricao-form");
+    const aviso = document.getElementById("aviso");
+    // Carrega as inscrições do localStorage
+    let inscricoes = carregarLocalStorage("inscricoes");
+
+    // Adiciona um listener para o evento de envio do formulário de inscrição
+    inscricaoForm.addEventListener("submit", e => {
+      // Impede o comportamento padrão de recarregar a página
+      e.preventDefault();
+      // Verifica se o limite de 24 inscrições foi atingido
+      if (inscricoes.length >= 24) {
+        // Exibe o aviso se o limite for atingido
+        aviso.classList.remove("hidden");
+        return;
+      }
+
+      // Obtém o nome do participante do campo de entrada
+      const nome = document.getElementById("inscricao-nome").value;
+      // Adiciona o nome à lista de inscrições
+      inscricoes.push({ nome });
+      // Salva a lista atualizada no localStorage
+      salvarLocalStorage("inscricoes", inscricoes);
+      // Atualiza o chaveamento com os novos dados
+      renderChaveamento();
+      // Reseta o formulário
+      inscricaoForm.reset();
+      // Esconde o aviso
+      aviso.classList.add("hidden");
+      // Mostra a seção de chaveamento
+      document.getElementById("chaveamento").classList.remove("hidden");
+      // Atualiza o texto do botão de toggle
+      document.getElementById("toggle-chaveamento").innerText = "Esconder Chaveamento";
+      // Rola suavemente até a seção de chaveamento
+      document.getElementById("chaveamento").scrollIntoView({ behavior: "smooth" });
+    });
+
+    // Função para renderizar o chaveamento com os nomes dos participantes
+    function renderChaveamento() {
+      // Seleciona os cartões da primeira fase do chaveamento
+      const slots = document.querySelectorAll("#chaveamento .space-y-4 > div");
+      // Itera sobre os cartões
+      slots.forEach((slot, i) => {
+        // Verifica se há um participante cadastrado para o índice
+        if (inscricoes && inscricoes.length > i && inscricoes[i].nome) {
+          // Exibe o nome do participante e atualiza o estilo
+          slot.textContent = inscricoes[i].nome;
+          slot.classList.remove("bg-gray-800", "text-gray-400");
+          slot.classList.add("bg-gray-900");
+        } else {
+          // Exibe "Herói X" como placeholder e aplica estilo padrão
+          slot.textContent = "Herói " + (i + 1);
+          slot.classList.remove("bg-gray-900");
+          slot.classList.add("bg-gray-800", "text-gray-400");
+        }
+      });
+    }
+
+    // Renderiza o chaveamento ao carregar a página
+    renderChaveamento();
+
+    // Seleciona o botão de toggle e a seção de chaveamento
+    const toggleBtn = document.getElementById("toggle-chaveamento");
+    const chaveamento = document.getElementById("chaveamento");
+
+    // Adiciona um listener para o clique no botão de toggle
+    toggleBtn.addEventListener("click", () => {
+      // Alterna a visibilidade do chaveamento
+      if (chaveamento.classList.contains("hidden")) {
+        chaveamento.classList.remove("hidden");
+        toggleBtn.innerText = "Esconder Chaveamento";
+      } else {
+        chaveamento.classList.add("hidden");
+        toggleBtn.innerText = "Mostrar Chaveamento";
+      }
+    });
+
+    // Seleciona o formulário do mural e a área de mensagens
+    const muralForm = document.getElementById("mural-form");
+    const muralMensagens = document.getElementById("mural-mensagens");
+    // Carrega as mensagens do localStorage
+    let mural = carregarLocalStorage("mural");
+
+    // Adiciona um listener para o envio do formulário do mural
+    muralForm.addEventListener("submit", e => {
+      // Impede o recarregamento da página
+      e.preventDefault();
+      // Obtém o nome e a mensagem do formulário
+      const nome = document.getElementById("mural-nome").value;
+      const msg = document.getElementById("mural-msg").value;
+      // Adiciona a mensagem à lista
+      mural.push({ nome, msg });
+      // Salva a lista atualizada no localStorage
+      salvarLocalStorage("mural", mural);
+      // Atualiza o mural com as mensagens
+      renderMural();
+      // Reseta o formulário
+      muralForm.reset();
+    });
+
+    // Função para renderizar as mensagens do mural
+    function renderMural() {
+      // Limpa a área de mensagens
+      muralMensagens.innerHTML = "";
+      // Itera sobre as mensagens salvas
+      mural.forEach(m => {
+        // Cria um novo cartão para cada mensagem
+        const div = document.createElement("div");
+        div.className = "card p-4 rounded-lg shadow-md";
+        div.innerHTML = `<strong class="accent-text">${m.nome}:</strong> <p>${m.msg}</p>`;
+        // Adiciona o cartão à área de mensagens
+        muralMensagens.appendChild(div);
+      });
+    }
+
+    // Renderiza o mural ao carregar a página
+    renderMural();
+
+    // Configura o IntersectionObserver para animar seções ao entrarem na tela
+    const sections = document.querySelectorAll("section");
+    const observer = new IntersectionObserver(entries => {
+      // Itera sobre as seções observadas
+      entries.forEach(entry => {
+        // Adiciona a classe 'visible' quando a seção entra na viewport
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.2 }); // Ativa quando 20% da seção é visível
+
+    // Observa todas as seções
+    sections.forEach(sec => observer.observe(sec));
+  </script>
+</body>
+</html>
