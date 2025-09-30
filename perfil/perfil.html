@@ -221,6 +221,33 @@
         font-size: 1.4rem;
       }
     }
+.cartas {
+  background: var(--cor-pedra);
+  border: 4px double var(--cor-telhado-escuro);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 25px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+}
+
+.cartas ul {
+  list-style: none;
+  padding: 0;
+}
+
+.cartas li {
+  font-size: 18px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cartas span {
+  font-weight: bold;
+  color: var(--cor-telhado-escuro);
+}
+
   </style>
 </head>
 <body>
@@ -257,6 +284,27 @@
         <li>🌟 Herói <span>Nv 1</span></li>
       </ul>
     </div>
+
+<!-- Cartas de Combate -->
+<div class="cartas">
+  <h2>Cartas de Combate</h2>
+  <ul>
+    <li>🂡 Ás de Espadas <span>0 Dano</span></li>
+    <li>🂢 2 de Espadas <span>9 Dano</span></li>
+    <li>🂣 3 de Espadas <span>3 Dano</span></li>
+    <li>🂤 4 de Espadas <span>9 Dano</span></li>
+    <li>🂥 5 de Espadas <span>3 Dano</span></li>
+    <li>🂦 6 de Espadas <span>9 Dano</span></li>
+    <li>🂧 7 de Espadas <span>3 Dano</span></li>
+    <li>🂨 8 de Espadas <span>9 Dano</span></li>
+    <li>🂩 9 de Espadas <span>0 Dano</span></li>
+    <li>🂪 10 de Espadas <span>18 ou 8 Dano</span></li>
+    <li>🂫 Valete de Espadas <span>0 Dano</span></li>
+    <li>🂭 Dama de Espadas <span>Nasce o porco Joel que tem 13 de vida</span></li>
+    <li>🂮 Rei de Espadas <span>0 Dano</span></li>
+  </ul>
+</div>
+
 
     <!-- SEÇÃO MEDALHAS - Grid de conquistas e medalhas -->
     <div class="medalhas">
